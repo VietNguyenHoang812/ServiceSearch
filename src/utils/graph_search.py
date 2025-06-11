@@ -1,3 +1,6 @@
+from src.infra import neo4j_driver as driver
+
+
 def get_node(node_id: str):
     query = """
         MATCH (n{id: $node_id})
