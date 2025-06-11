@@ -1,11 +1,11 @@
-from Qdrant import models
+from qdrant_client import models
 
-from src.infra import qdrant_client, model_bm42, old_model_dense, model_dense
+from src.infra import qclient, model_bm42, old_model_dense, model_dense
 from utils.vector_search import embedding_text
 
 
 def dense_search_netbi(query_str: str, collection_name: str, threshold: float=0.35, limit: int=5):
-    topk = qdrant_client.query_points(
+    topk = qclient.query_points(
         collection_name = collection_name, 
         query = embedding_text(query_str, old_model_dense),
         limit = limit
@@ -28,7 +28,7 @@ def dense_search_netbi(query_str: str, collection_name: str, threshold: float=0.
 
 # Currently, this function is not used
 def dense_search_trick(query_str: str, collection_name: str, threshold: float=0.9, limit: int=1):
-    topk = qdrant_client.query_points(
+    topk = qclient.query_points(
         collection_name = collection_name, 
         query = embedding_text(query_str, model_dense), # combine score 
         limit = limit
@@ -52,7 +52,7 @@ def dense_search_trick(query_str: str, collection_name: str, threshold: float=0.
 def hybrid_search_netbi(query_str: str, collection_name: str, filter: list, threshold: float=0.45, limit: int=5):
     sparse_embedding = list(model_bm42.query_embed(query_str))[0]
     
-    topk = qdrant_client.query_points(
+    topk = qclient.query_points(
         collection_name = collection_name, 
         query_filter=models.Filter(
             must=[

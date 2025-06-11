@@ -4,7 +4,7 @@ import requests
 from fastapi import APIRouter, Request
 from qdrant_client import models
 
-from src.infra import qdrant_client, model_bm42, model_dense
+from src.infra import qclient, model_bm42, model_dense
 from src.utils.vector_search import embedding_text
 
 
@@ -25,7 +25,7 @@ async def query(request: Request):
     # Hybrid search
     sparse_embedding = list(model_bm42.query_embed(query_str))[0]
     
-    topk = qdrant_client.query_points(
+    topk = qclient.query_points(
         collection_name = collection_name, 
         prefetch = [
             models.Prefetch(query = sparse_embedding.as_object(), using = "text-sparse", limit = 20),

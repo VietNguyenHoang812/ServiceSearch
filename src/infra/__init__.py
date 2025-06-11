@@ -3,7 +3,7 @@ from .models import ModelBM42Singleton
 
 
 # Clients
-qdrant_client = get_qdrant_client()
+qclient = get_qdrant_client()
 xinference_client = get_xinference_client()
 neo4j_driver = get_neo4j_driver()
 

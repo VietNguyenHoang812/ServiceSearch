@@ -1,11 +1,11 @@
-from Qdrant import models
+from qdrant_client import models
 
-from src.infra import qdrant_client, model_bm42, model_dense
+from src.infra import qclient, model_bm42, model_dense
 from utils.vector_search import embedding_text
 
 
 def dense_search_vt(query_str: str, collection_name: str, threshold: float=0.4, limit: int=5):
-    topk = qdrant_client.query_points(
+    topk = qclient.query_points(
         collection_name = collection_name, 
         query = embedding_text(query_str, model_dense),
         limit = limit
@@ -37,7 +37,7 @@ def dense_search_vt(query_str: str, collection_name: str, threshold: float=0.4, 
 def hybrid_search(query_str: str, collection_name: str, threshold: float=0.45, limit: int=5):
     sparse_embedding = list(model_bm42.query_embed(query_str))[0]
     
-    topk = qdrant_client.query_points(
+    topk = qclient.query_points(
         collection_name = collection_name, 
         prefetch = [
             models.Prefetch(query = sparse_embedding.as_object(), using = "text-sparse", limit = 5),
